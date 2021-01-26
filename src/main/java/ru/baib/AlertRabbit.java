@@ -3,6 +3,7 @@ package ru.baib;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -12,10 +13,13 @@ import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
     public static void main(String[] args) {
+        Properties prop = new Properties();
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
-            Properties prop = new Properties();
             prop.load(in);
-            Integer period = Integer.parseInt(prop.getProperty("rabbit.interval"));
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        try {
             /* 1. Конфигурирование
             Начало работы происходит с создания класса управляющего всеми работами.
             В объект Scheduler мы будем добавлять задачи, которые хотим выполнять периодически.*/
@@ -27,7 +31,7 @@ public class AlertRabbit {
             JobDetail job = newJob(Rabbit.class).build();
             // 3. Создание расписания
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(period)
+                    .withIntervalInSeconds(Integer.parseInt(prop.getProperty("rabbit.interval")))
                     .repeatForever();
             /* 4. Задача выполняется через триггер
             Здесь можно указать, когда начинать запуск. Мы хотим сделать это сразу.*/
@@ -37,7 +41,7 @@ public class AlertRabbit {
                     .build();
             // 5. Загрузка задачи и триггера в планировщик
             scheduler.scheduleJob(job, trigger);
-        } catch (Exception e) {
+        } catch (SchedulerException e) {
             e.printStackTrace();
         }
     }
