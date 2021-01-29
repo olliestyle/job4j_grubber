@@ -4,11 +4,12 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+
 import static org.junit.Assert.*;
 
-public class SqlRuParseTest {
+public class DateParserTest {
 
-    SqlRuParse parser = new SqlRuParse();
+    DateParser parser = new DateParser();
     LocalDateTime ldt;
 
     @Test
@@ -31,6 +32,18 @@ public class SqlRuParseTest {
                 22,
                 10,
                 56,
+                0), parser.convertToLDT(str));
+    }
+
+    @Test
+    public void whenYesterday() {
+        String str = "вчера, 16:30";
+        ldt = LocalDateTime.now().minusDays(1);
+        assertEquals(LocalDateTime.of(ldt.getYear(),
+                ldt.getMonth(),
+                ldt.getDayOfMonth(),
+                16,
+                30,
                 0), parser.convertToLDT(str));
     }
 }
