@@ -4,18 +4,24 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Post {
-    String link;
-    String description;
-    LocalDateTime creationDate;
+    private int id;
+    private String link;
+    private String description;
+    private LocalDateTime creationDate;
 
     public Post() {
 
     }
 
-    public Post(String link, String description, LocalDateTime creationDate) {
+    public Post(int id, String link, String description, LocalDateTime creationDate) {
+        this.id = id;
         this.link = link;
         this.description = description;
         this.creationDate = creationDate;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public String getLink() {
@@ -28,6 +34,10 @@ public class Post {
 
     public LocalDateTime getCreationDate() {
         return this.creationDate;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setLink(String link) {
@@ -51,19 +61,21 @@ public class Post {
             return false;
         }
         Post post = (Post) obj;
-        return link.equals(post.link) && description.equals(post.description) && creationDate.equals(post.creationDate);
+        return id == post.id && link.equals(post.link) && description.equals(post.description) && creationDate.equals(post.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(link, description, creationDate);
+        return Objects.hash(id, link, description, creationDate);
     }
 
     @Override
     public String toString() {
         return "Post{"
                 +
-                "link='" + link + '\''
+                "id=" + id
+                +
+                ", link='" + link + '\''
                 +
                 ", description='" + description + '\''
                 +
