@@ -1,7 +1,13 @@
 package ru.baib;
 
+import org.jsoup.Jsoup;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Random;
 
 public class Post {
     private int id;
@@ -18,6 +24,23 @@ public class Post {
         this.link = link;
         this.description = description;
         this.creationDate = creationDate;
+    }
+
+    public void fillPost(String link) {
+        this.setLink(link);
+        // генерация id случайным образом, видимо, временная мера
+        Random random = new Random();
+        this.setId(random.nextInt());
+        try {
+            Document doc = Jsoup.connect(link).get();
+            Elements desc = doc.select(".msgBody");
+            this.setDescription(desc.get(1).text());
+            Elements date = doc.select(".msgFooter");
+            String fromFooter = date.get(0).text();
+            this.setCreationDate(new DateParser().convertToLDT(fromFooter.substring(0, fromFooter.indexOf("[") - 1)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
