@@ -1,16 +1,11 @@
 package ru.baib;
 
-import org.jsoup.Jsoup;
-
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Random;
 
 public class Post {
     private int id;
+    private String name;
     private String link;
     private String description;
     private LocalDateTime creationDate;
@@ -19,32 +14,20 @@ public class Post {
 
     }
 
-    public Post(int id, String link, String description, LocalDateTime creationDate) {
+    public Post(int id, String name, String link, String description, LocalDateTime creationDate) {
         this.id = id;
+        this.name = name;
         this.link = link;
         this.description = description;
         this.creationDate = creationDate;
     }
 
-    public void fillPost(String link) {
-        this.setLink(link);
-        // генерация id случайным образом, видимо, временная мера
-        Random random = new Random();
-        this.setId(random.nextInt());
-        try {
-            Document doc = Jsoup.connect(link).get();
-            Elements desc = doc.select(".msgBody");
-            this.setDescription(desc.get(1).text());
-            Elements date = doc.select(".msgFooter");
-            String fromFooter = date.get(0).text();
-            this.setCreationDate(new DateParser().convertToLDT(fromFooter.substring(0, fromFooter.indexOf("[") - 1)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public int getId() {
         return this.id;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public String getLink() {
@@ -61,6 +44,10 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setLink(String link) {
@@ -84,12 +71,12 @@ public class Post {
             return false;
         }
         Post post = (Post) obj;
-        return id == post.id && link.equals(post.link) && description.equals(post.description) && creationDate.equals(post.creationDate);
+        return id == post.id && link.equals(post.link) && name.equals(post.name) && creationDate.equals(post.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, link, description, creationDate);
+        return Objects.hash(id, link, name, creationDate);
     }
 
     @Override
@@ -97,6 +84,8 @@ public class Post {
         return "Post{"
                 +
                 "id=" + id
+                +
+                ", name='" + name + '\''
                 +
                 ", link='" + link + '\''
                 +
