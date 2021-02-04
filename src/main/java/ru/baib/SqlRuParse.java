@@ -6,12 +6,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class SqlRuParse {
+public class SqlRuParse implements Parse {
 
     ArrayList<String> links = new ArrayList<>();
 
@@ -27,7 +28,33 @@ public class SqlRuParse {
         return this.links;
     }
 
-    public Post fillPost(String link) {
+    public static void main(String[] args) throws Exception {
+        SqlRuParse sqlRuParse = new SqlRuParse();
+        List<Post> allPosts = new ArrayList<>();
+        for (String s: sqlRuParse.getLinks()) {
+            allPosts.addAll(sqlRuParse.list(s));
+        }
+        System.out.println("debug");
+    }
+
+    @Override
+    public List<Post> list(String link) {
+        List<Post> res = new ArrayList<>();
+        try {
+            Document doc = Jsoup.connect(link).get();
+            Elements row = doc.select(".postslisttopic");
+            for (Element el: row) {
+                Post toAdd = detail(el.child(0).attr("href"));
+                res.add(toAdd);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public Post detail(String link) {
         Post toFill = new Post();
         toFill.setLink(link);
         // генерация id случайным образом, видимо, временная мера
@@ -46,27 +73,5 @@ public class SqlRuParse {
             e.printStackTrace();
         }
         return toFill;
-    }
-
-    public static void main(String[] args) throws Exception {
-        SqlRuParse sqlRuParse = new SqlRuParse();
-        for (String str: sqlRuParse.getLinks()) {
-            Document doc = Jsoup.connect(str).get();
-            Elements row = doc.select(".postslisttopic");
-            Elements dates = doc.select(".altCol");
-            Iterator<Element> itRow = row.iterator();
-            Iterator<Element> itDates = dates.iterator();
-            itDates.next(); // у аттрибута altCol два значения, нам нужно только второе, где дата
-            while (itRow.hasNext()) {
-                Element href = itRow.next().child(0);
-                System.out.println(href.attr("href"));
-                System.out.println(href.text());
-                Element date = itDates.next();
-                System.out.println(date.text());
-                if (itDates.hasNext()) {
-                    itDates.next();
-                }
-            }
-        }
     }
 }
