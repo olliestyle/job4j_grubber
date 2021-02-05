@@ -1,4 +1,6 @@
-package ru.baib;
+package ru.baib.parse;
+
+import ru.baib.model.Post;
 
 import java.util.List;
 

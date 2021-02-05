@@ -1,4 +1,4 @@
-package ru.baib;
+package ru.baib.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

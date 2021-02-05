@@ -1,6 +1,8 @@
 package ru.baib;
 
 import org.junit.Test;
+import ru.baib.model.Post;
+import ru.baib.parse.SqlRuParse;
 
 import java.time.LocalDateTime;
 import java.time.Month;
