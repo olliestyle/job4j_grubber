@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class SqlRuParse implements Parse {
 
-    ArrayList<String> links = new ArrayList<>();
+    private ArrayList<String> links = new ArrayList<>();
 
     public SqlRuParse() {
         links.add("https://www.sql.ru/forum/job-offers");
@@ -25,6 +25,7 @@ public class SqlRuParse implements Parse {
         links.add("https://www.sql.ru/forum/job-offers/5");
     }
 
+    @Override
     public ArrayList<String> getLinks() {
         return this.links;
     }
@@ -58,9 +59,9 @@ public class SqlRuParse implements Parse {
     public Post detail(String link) {
         Post toFill = new Post();
         toFill.setLink(link);
-        // генерация id случайным образом, видимо, временная мера
-        Random random = new Random();
-        toFill.setId(random.nextInt());
+//        // генерация id случайным образом, видимо, временная мера
+//        Random random = new Random();
+//        toFill.setId(random.nextInt());
         try {
             Document doc = Jsoup.connect(link).get();
             List<TextNode> name = doc.select(".messageHeader").get(0).textNodes();
